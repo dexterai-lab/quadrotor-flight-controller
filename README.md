@@ -150,6 +150,7 @@ There are a handful of keyboard / mouse commands to help with the simulator itse
  - R - reset simulation
  - Space - pause simulation
 
+## Scenarios ##
 
 #### Scenario 1: Intro
 If the mass doesn't match the actual mass of the quad, it'll fall down. 
