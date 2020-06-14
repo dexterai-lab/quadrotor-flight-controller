@@ -70,10 +70,23 @@ VehicleCommand QuadControl::GenerateMotorCommands(float collThrustCmd, V3F momen
 
   ////////////////////////////// BEGIN STUDENT CODE ///////////////////////////
 
-  cmd.desiredThrustsN[0] = mass * 9.81f / 4.f; // front left
-  cmd.desiredThrustsN[1] = mass * 9.81f / 4.f; // front right
-  cmd.desiredThrustsN[2] = mass * 9.81f / 4.f; // rear left
-  cmd.desiredThrustsN[3] = mass * 9.81f / 4.f; // rear right
+  
+  float l = L / sqrtf(2.f);
+  float t_x = momentCmd.x / l;
+  float t_y = momentCmd.y / l;
+  float t_z = -momentCmd.z / kappa;
+  float F = collThrustCmd;
+  
+  float N0 = (F + t_z + t_x + t_y) / 4.f; // front left
+  float N1 = (F - t_z - t_x + t_y) / 4.f; // front right
+  float N2 = (F - t_z + t_x - t_y) / 4.f; // rear left
+  float N3 = (F + t_z - t_x - t_y) / 4.f; // rear right
+  
+  cmd.desiredThrustsN[0] = CONSTRAIN(N0, minMotorThrust, maxMotorThrust); // front left
+  cmd.desiredThrustsN[1] = CONSTRAIN(N1, minMotorThrust, maxMotorThrust); // front right
+  cmd.desiredThrustsN[2] = CONSTRAIN(N2, minMotorThrust, maxMotorThrust); // rear left
+  cmd.desiredThrustsN[3] = CONSTRAIN(N3, minMotorThrust, maxMotorThrust); // rear right
+    
 
   /////////////////////////////// END STUDENT CODE ////////////////////////////
 
@@ -98,7 +111,14 @@ V3F QuadControl::BodyRateControl(V3F pqrCmd, V3F pqr)
 
   ////////////////////////////// BEGIN STUDENT CODE ///////////////////////////
 
-  
+  V3F rateError = pqrCmd - pqr;
+
+  V3F I;
+  I.x = Ixx;
+  I.y = Iyy;
+  I.z = Izz;
+
+  momentCmd = I * kpPQR * rateError;
 
   /////////////////////////////// END STUDENT CODE ////////////////////////////
 
