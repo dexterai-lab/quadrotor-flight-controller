@@ -267,7 +267,7 @@ Ok, now we need to add an integral part to the altitude controller to move it fr
 
 Now we need to tune the integral control, and other control parameters until all the quads successfully move properly.
 
-![C++ Scenario 4](./images/scenario4-post.gif)
+![C++ Scenario 4](./images/scenario4_post.gif)
 
 The standard output when the scenario 4 passes::
 
