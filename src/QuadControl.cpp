@@ -149,7 +149,37 @@ V3F QuadControl::RollPitchControl(V3F accelCmd, Quaternion<float> attitude, floa
 
   ////////////////////////////// BEGIN STUDENT CODE ///////////////////////////
 
+  if (collThrustCmd > 0) {
 
+      float c = -collThrustCmd / mass;
+
+      float R11 = R(0, 0);
+      float R12 = R(0, 1);
+      float R21 = R(1, 0);
+      float R22 = R(1, 1);
+      float R33 = R(2, 2);
+
+      float b_x_actual = R(0, 2);
+      float b_y_actual = R(1, 2);
+
+      float b_x_c = CONSTRAIN(accelCmd.x / c, -maxTiltAngle, maxTiltAngle);
+      float b_dot_x_c = kpBank * (b_x_c - b_x_actual);
+
+      float b_y_c = CONSTRAIN(accelCmd.y / c, -maxTiltAngle, maxTiltAngle);
+      float b_dot_y_c = kpBank * (b_y_c - b_y_actual);
+
+      float p_c = (1 / R33) * (R21 * b_dot_x_c - R11 * b_dot_y_c);
+      float q_c = (1 / R33) * (R22 * b_dot_x_c - R12 * b_dot_y_c);
+
+      pqrCmd.x = p_c;
+      pqrCmd.y = q_c;
+      pqrCmd.z = 0;
+  }
+  else {
+      pqrCmd.x = 0;
+      pqrCmd.y = 0;
+      pqrCmd.z = 0;
+  }
 
   /////////////////////////////// END STUDENT CODE ////////////////////////////
 
